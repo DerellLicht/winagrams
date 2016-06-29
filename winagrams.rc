@@ -1,0 +1,61 @@
+//****************************************************************************
+//  Copyright (c) 2010  Daniel D Miller
+//  winagrams.exe - a Win32 anagrams program
+//
+//  Written/integrated by:  Dan Miller
+//****************************************************************************
+//  Interesting notes about this file:
+//
+//  > SS_NOTIFY and "Static" controls
+//    If SS_NOTIFY is not specified in the control styles,
+//    you cannot attach tooltips to the control.
+//
+//****************************************************************************
+#include <windows.h>
+
+#include "resource.h"
+
+#define  IDC_STATIC              65535
+
+IDI_APPICON   ICON      "lightray.ico"
+
+// IDC_LEDBMPS   BITMAP    "leds.tiny.bmp"
+
+IDD_MAIN_DIALOG DIALOGEX 200, 100, 310, 300
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "WinaGrams"
+FONT 10, "Times New Roman"
+// FONT 12, "MS Sans Serif"
+BEGIN
+   //  Note: SS_NOTIFY allows a static control to generate tooltip messages
+   LTEXT          "Source phrase:",   IDS_PHRASE,        5,  5, 50, 10,SS_NOTIFY
+   EDITTEXT                           IDC_PHRASE,       60,  5,150, 10
+   DEFPUSHBUTTON  "Find Anagrams",    IDM_DO_ANAGRAMS, 220,  5, 80, 10,WS_TABSTOP
+
+   LTEXT          "Word List File:",  IDS_WORDS,         5, 20, 50, 10,SS_NOTIFY
+   LTEXT          "",                 IDC_WORDS,        60, 20,150,  9,SS_SUNKEN
+
+   //  Note: SS_NOTIFY allows a static control to generate tooltip messages
+   LTEXT          "Min Word Chars:",  IDS_MAX_CHARS,   220, 20, 57,  9,SS_NOTIFY
+   EDITTEXT                           IDC_MAX_CHARS,   280, 20, 30,  9,ES_NUMBER
+END
+
+//***************************************************************************
+//  comm-task handler dialog
+//  This is a (maybe hidden) window for the comm-task thread
+//***************************************************************************
+IDD_ANAGRAM_TASK DIALOGEX 200, 30, 140, 40
+STYLE DS_MODALFRAME | WS_POPUP | NOT WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+// STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Comm Task thread"
+FONT 8, "MS Sans Serif"
+BEGIN
+   CONTROL         "", IDC_STATIC, "Static", SS_BLACKFRAME, 10, 10, 40, 13
+   LTEXT           "TX:",IDC_STATIC,12,12,20,8
+   // CONTROL         "",IDC_LED_POLLING,"Static",WS_CHILD | WS_VISIBLE | SS_ICON | SS_CENTERIMAGE | SS_REALSIZEIMAGE,
+   //                    35, 11, 10, 8
+END
+
+
