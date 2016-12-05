@@ -12,14 +12,14 @@ CFLAGS += -Wno-write-strings
 CFLAGS += -Weffc++
 
 # link library files
-CFLAGS += -I../der_libs
-CSRC=../der_libs/common_funcs.cpp \
-../der_libs/common_win.cpp \
-../der_libs/statbar.cpp \
-../der_libs/wthread.cpp \
-../der_libs/winmsgs.cpp \
-../der_libs/cterminal.cpp \
-../der_libs/vlistview.cpp 
+CFLAGS += -Ider_libs
+CSRC=der_libs/common_funcs.cpp \
+der_libs/common_win.cpp \
+der_libs/statbar.cpp \
+der_libs/wthread.cpp \
+der_libs/winmsgs.cpp \
+der_libs/cterminal.cpp \
+der_libs/vlistview.cpp 
 
 # link application-specific sources
 CSRC+=winagrams.cpp anagram.cpp thread.cpp 
@@ -61,19 +61,17 @@ rc.o: winagrams.rc
 
 # DO NOT DELETE
 
-../der_libs/common_funcs.o: ../der_libs/common.h
-../der_libs/common_win.o: ../der_libs/common.h ../der_libs/commonw.h
-../der_libs/statbar.o: ../der_libs/common.h ../der_libs/commonw.h
-../der_libs/statbar.o: ../der_libs/statbar.h
-../der_libs/wthread.o: ../der_libs/wthread.h
-../der_libs/cterminal.o: ../der_libs/common.h ../der_libs/commonw.h
-../der_libs/cterminal.o: ../der_libs/cterminal.h ../der_libs/vlistview.h
-../der_libs/vlistview.o: ../der_libs/common.h ../der_libs/commonw.h
-../der_libs/vlistview.o: ../der_libs/vlistview.h
-winagrams.o: resource.h ../der_libs/common.h ../der_libs/commonw.h
-winagrams.o: winagrams.h ../der_libs/statbar.h ../der_libs/cterminal.h
-winagrams.o: ../der_libs/vlistview.h
-anagram.o: resource.h ../der_libs/common.h ../der_libs/cterminal.h
-anagram.o: ../der_libs/vlistview.h
-thread.o: resource.h ../der_libs/common.h ../der_libs/commonw.h winagrams.h
-thread.o: ../der_libs/wthread.h
+der_libs/common_funcs.o: der_libs/common.h
+der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
+der_libs/statbar.o: der_libs/common.h der_libs/commonw.h der_libs/statbar.h
+der_libs/wthread.o: der_libs/wthread.h
+der_libs/cterminal.o: der_libs/common.h der_libs/commonw.h
+der_libs/cterminal.o: der_libs/cterminal.h der_libs/vlistview.h
+der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
+der_libs/vlistview.o: der_libs/vlistview.h
+winagrams.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
+winagrams.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
+anagram.o: resource.h der_libs/common.h der_libs/cterminal.h
+anagram.o: der_libs/vlistview.h
+thread.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
+thread.o: der_libs/wthread.h
