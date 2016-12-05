@@ -1,3 +1,4 @@
+shell=CMD.EXE
 USE_DEBUG = NO
 
 ifeq ($(USE_DEBUG),YES)
@@ -53,7 +54,7 @@ anagram:
 
 $(BIN): $(OBJS)
 	g++ $(CFLAGS) -mwindows -s $(OBJS) -o $@ -lcomctl32
-	cmd /C "\\InnoSetup5\iscc" /Q winagrams.iss
+	\\InnoSetup5\iscc /Q winagrams.iss
 
 rc.o: winagrams.rc 
 	windres $< -O coff -o $@
