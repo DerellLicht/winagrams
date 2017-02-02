@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 Output/
 *.o
 *.exe
 *.bak
-=======
-Output/
-*.o
-*.exe
-*.bak
->>>>>>> master
+_lint.tmp
