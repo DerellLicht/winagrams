@@ -256,6 +256,7 @@ void find_anagrams(HWND hwnd)
       syslog("find_anagrams: [%u] [%s]\n", input_bfr_len, input_bfr) ;
 
    //  scan for separator char
+   excl_idx = 0 ; //  reset exclusions list
    char *hd ;
    char *tl = strchr(input_bfr, '!');
    if (tl != NULL) {
