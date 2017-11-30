@@ -20,9 +20,12 @@
 //             > Create new string-list class
 //    1.05     Switch to generic functions for creating status bar and
 //             up/down control
+//    1.06     Add exclusion list, after ! at end of word list.
+//             Example:
+//                 led zeppelin kiss ! zip zen
 //****************************************************************************
 
-static char const * const VerNum = "V1.05" ;
+static char const * const VerNum = "V1.06" ;
 static char szClassName[] = "WinaGrams" ;
 
 #include <windows.h>
@@ -70,6 +73,12 @@ static uint cyClient = 0;   //  subtrace height of status bar
 void status_message(char *msgstr)
 {
    MainStatusBar->show_message(msgstr);
+}
+
+//*******************************************************************
+void status_message(char *msgstr, uint idx)
+{
+   MainStatusBar->show_message(idx, msgstr);
 }
 
 //****************************************************************************
@@ -234,10 +243,10 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    //  re-position status-bar parts
    {
    int sbparts[3];
-   sbparts[0] = (int) (6 * cxClient / 10) ;
-   sbparts[1] = (int) (8 * cxClient / 10) ;
-   sbparts[2] = -1;
-   MainStatusBar->SetParts(3, &sbparts[0]);
+   sbparts[0] = (int) (5 * cxClient / 10) ;
+   // sbparts[1] = (int) (8 * cxClient / 10) ;
+   sbparts[1] = -1;
+   MainStatusBar->SetParts(2, &sbparts[0]);
    }
    
    //****************************************************************

@@ -82,13 +82,12 @@
 
 #include "resource.h"
 #include "common.h"
+#include "winagrams.h"
 #include "cterminal.h"
 
 //  winagrams.cpp
 extern CTerminal *myTerminal ;
-extern void status_message(char *msgstr);
-extern void clear_message_area(void);
-extern void update_listview(void);
+
 
 #define MAXWORDS 64        /* Maximum number of words in output phrases */
 									/* Also determines maximum recursion depth */
@@ -183,7 +182,7 @@ bool read_word_list(char *wordlist_filename)
    return true ;
 }
 
-#define  MAX_PKT_CHARS   80
+#define  MAX_PKT_CHARS   200
 
 //********************************************************************
 //  this is a memory leak, but I'm getting confused
@@ -213,6 +212,37 @@ static void delete_wordlist(void)
 }
 
 //********************************************************************
+#define  MAX_EXCL_LIST  10
+static char* excl_list[MAX_EXCL_LIST] ;
+static uint excl_idx = 0 ;
+
+static void add_to_excl_list(char *hd)
+{
+   if (excl_idx >= MAX_EXCL_LIST) {
+      return ;
+   }
+   excl_list[excl_idx++] = hd ;
+   if (vflag)  //lint !e506 !e774
+      syslog("added exclusion: [%s]\n", hd);
+}
+
+//********************************************************************
+//  search excluded-string list and see if any are present in
+//  this string argument.  If any are found, return false, else true
+//********************************************************************
+static bool excluded_words_present(char *bfr)
+{
+   bool bresult = false ;
+   uint idx ;
+   for (idx=0; idx<excl_idx; idx++) {
+      if (strstr(bfr, excl_list[idx]) != NULL) {
+         return true;
+      }
+   }
+   return bresult;
+}
+
+//********************************************************************
 void find_anagrams(HWND hwnd)
 {
    char msgstr[81] ;
@@ -225,10 +255,43 @@ void find_anagrams(HWND hwnd)
    if (vflag)  //lint !e506 !e774
       syslog("find_anagrams: [%u] [%s]\n", input_bfr_len, input_bfr) ;
 
+   //  scan for separator char
+   char *hd ;
+   char *tl = strchr(input_bfr, '!');
+   if (tl != NULL) {
+      *tl++ = 0 ; //  NULL-term word list, point to exclusions list
+      while (LOOP_FOREVER) {
+         tl = strip_leading_spaces(tl);
+         if (*tl != 0) {
+            hd = tl ;
+            tl = strchr(hd, ' ');
+            if (tl != NULL) {
+               *tl++ = 0 ;
+               //  hd points to one exclusion arg
+            }
+            add_to_excl_list(hd);
+            if (tl == NULL) {
+               break;
+            }
+         }
+      }
+   }
+
    status_message("Begin new anagram search") ;
 
    // clear_message_area(&this_term);
    clear_message_area();
+   if (excl_idx == 0) {
+      status_message("excl: <none>", 1);
+   }
+   else
+   {
+      uint slen = sprintf(msgstr, "excl: ");
+      for (uint idx=0; idx<excl_idx; idx++) {
+         slen += (uint) sprintf(msgstr+slen, "%s ", excl_list[idx]);
+      }
+      status_message(msgstr, 1);
+   }
    delete_wordlist() ;
 
    ZeroMemory((char *) &freq[0], sizeof(freq)) ;
@@ -249,7 +312,6 @@ void find_anagrams(HWND hwnd)
    }
 
    wordlist = sort (wordlist);
-
    initfind (wordlist);
 
    solutions_found = 0 ;
@@ -694,12 +756,14 @@ static void print(int gen, int higen)
          // syslog("e%s ", ip->word) ;
          slen += wsprintf(&bfr[slen], "%s ", ip->word) ;
 
-         //  change this to stuff into a list, 
-         //  build listview when done
-         myTerminal->put(bfr) ;
-         // update_listview();   //  this causes the flickering
+         if (!excluded_words_present(bfr)) {
+            //  change this to stuff into a list, 
+            //  build listview when done
+            myTerminal->put(bfr) ;
+            // update_listview();   //  this causes the flickering
 
-         solutions_found++ ;
+            solutions_found++ ;
+         }
       }
 	}
 	else {

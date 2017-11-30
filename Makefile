@@ -71,7 +71,7 @@ der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
 winagrams.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
 winagrams.o: der_libs/statbar.h der_libs/cterminal.h der_libs/vlistview.h
-anagram.o: resource.h der_libs/common.h der_libs/cterminal.h
+anagram.o: resource.h der_libs/common.h winagrams.h der_libs/cterminal.h
 anagram.o: der_libs/vlistview.h
 thread.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
 thread.o: der_libs/wthread.h
