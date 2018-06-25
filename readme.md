@@ -1,14 +1,19 @@
+### winagrams - anagram builder
+
 The Windows version of this anagram program was created 
 by Derell Licht (herd ill Celt).  
-The current version should be available at:
-http://derelllicht.com/winagrams.html
 
 This application is copyright (c) 2010-2016  Daniel D Miller
 This program, and its source code, are distributed as freeware.
 You can use them for any purpose, personal or commercial, in whole or in part,
 for any purpose that you wish, without contacting me further.
 
-//****************************************************************
+winagrams is freeware, source code is available.  
+Download [winagrams source code](https://github.com/DerellLicht/winagrams) here
+
+Download [Windows installer](https://github.com/DerellLicht/bin/raw/master/winagrams.setup.exe) here
+
+<hr>
 This application is built using the MinGW toolchain.
 It also requires certain Cygwin tools (rm, make, etc)
 
@@ -18,9 +23,9 @@ To build command-line version, run
 To build the Windows version, run
    make
 
-//****************************************************************
+//****************************************************************  
 The original command-line anagram program, in C source code,
-was created and distributed by Martin Guy (a Grimy Nut),
+was created and distributed by Martin Guy (a Grimy Nut);  
 it is available from http://anagram.sourceforge.net/
 
 //****************************************************************
