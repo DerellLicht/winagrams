@@ -3,12 +3,12 @@
 The Windows version of this anagram program was created 
 by Derell Licht (herd ill Celt).  
 
-This application is copyright (c) 2010-2016  Daniel D Miller
-This program, and its source code, are distributed as freeware.
+This application is copyright (c) 2010-2016  Daniel D Miller  
+This program, and its source code, are distributed as unrestricted freeware.
 You can use them for any purpose, personal or commercial, in whole or in part,
 for any purpose that you wish, without contacting me further.
 
-winagrams is freeware; Download [source code](https://github.com/DerellLicht/winagrams) here
+Obtain [source code](https://github.com/DerellLicht/winagrams) here
 
 Download [Windows installer](https://github.com/DerellLicht/bin/raw/master/winagrams.setup.exe) here
 
@@ -17,9 +17,7 @@ The original command-line anagram program, in C source code,
 was created and distributed by Martin Guy (a Grimy Nut); 
 it is available from [here](http://anagram.sourceforge.net/)
 
-<hr>
-The virtual listview code for the terminal (output) window is derived from
-the VListVw application in the Microsoft Platform SDK (2003).
+I wrapped the WinAPI interface around Martin's original code, to make it more accessible to modern users.
 
 #### library files
 The default dictionary file (words) was obtained from a relatively recent version of Linux;  
@@ -42,10 +40,10 @@ Building the Windows installer will require [Inno Setup](http://jrsoftware.org/i
 I use version 5.37, but later versions should work fine.
 
 To build command-line version, run  
-   make anagram
+   `make anagram`
 
 To build the Windows version, run  
-   make
+   `make`
 
 
 
