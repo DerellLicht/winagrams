@@ -3,7 +3,7 @@
 The Windows version of this anagram program was created 
 by Derell Licht (herd ill Celt).  
 
-This application is copyright (c) 2010-2016  Daniel D Miller  
+This application is copyright (c) 2010-2016  Derell Licht  
 This program, and its source code, are distributed as unrestricted freeware.
 You can use them for any purpose, personal or commercial, in whole or in part,
 for any purpose that you wish, without contacting me further.
@@ -35,7 +35,7 @@ of results, from relatively trivial search patterns... at least from my experien
 more than about 10 pages of results, end up not being very manageable...
 
 #### building the application
-This application is built using the MinGW toolchain; I recommend the [TDM](http://tdm-gcc.tdragon.net/), to avoid certain issues with library accessibility. The makefile also requires certain Cygwin tools (rm, make, etc).
+This application is built using the MinGW toolchain; I recommend the [TDM](http://tdm-gcc.tdragon.net/) distribution, to avoid certain issues with library accessibility. The makefile also requires certain Cygwin tools (rm, make, etc).
 Building the Windows installer will require [Inno Setup](http://jrsoftware.org/isinfo.php); 
 I use version 5.37, but later versions should work fine.
 
