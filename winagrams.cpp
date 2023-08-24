@@ -1,31 +1,11 @@
 //**********************************************************************
-//  Copyright (c) 2009-2014  Daniel D Miller
-//  winagrams.exe - A Win32 anagram program
+//  Copyright (c) 2009-2023  Daniel D Miller
+//  winagrams.exe - A Windows anagram program
 //  
 //  Written by:   Daniel D. Miller
 //**********************************************************************
-//  version		changes
-//	 =======		======================================
-// 	1.00		Initial release
-//    1.01     > Add counter to show status of string construction.
-//               Otherwise, "password manager" takes several minutes to 
-//               complete, and the program appears hung while this runs.
-//             > Add separate thread to handle search, so messages are
-//               still processed during search.  We also want to add an
-//               ABORT button to the program, for long searches.
-//    1.02     Add field to modify minimum word length
-//    1.03     Reverse results list, so largest words are first.
-//             This seems more likely to provide most-interesting results.
-//    1.04     > Convert to using new classes
-//             > Create new string-list class
-//    1.05     Switch to generic functions for creating status bar and
-//             up/down control
-//    1.06     Add exclusion list, after ! at end of word list.
-//             Example:
-//                 led zeppelin kiss ! zip zen
-//****************************************************************************
 
-static char const * const VerNum = "V1.06" ;
+// char const * const VerNum = "V1.07" ;
 static char szClassName[] = "WinaGrams" ;
 
 #include <windows.h>
@@ -34,6 +14,7 @@ static char szClassName[] = "WinaGrams" ;
 #endif
 #include <tchar.h>
 
+#include "version.h"
 #include "resource.h"
 #include "common.h"
 #include "commonw.h"
@@ -288,6 +269,11 @@ static bool do_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, LP
 
       case IDM_READ_DICT:
          return true;
+         
+      case IDC_ABOUT:
+         CmdAbout(hwnd);
+         return true;
+
       }  //lint !e744
    } 
    return false ;

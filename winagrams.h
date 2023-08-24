@@ -9,4 +9,6 @@ void status_message(char *msgstr, uint idx);
 void clear_message_area(void);
 void update_listview(void);
 
+//  about.cpp
+BOOL CmdAbout(HWND hwnd);
 

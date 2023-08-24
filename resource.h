@@ -19,6 +19,7 @@
 
 #define  IDD_MAIN_DIALOG      1000
 #define  IDD_ANAGRAM_TASK     1001
+#define  IDD_ABOUT            1002
 
 #define  IDC_PHRASE           2000
 #define  IDS_PHRASE           2001
@@ -31,6 +32,9 @@
 #define  IDC_MAXDEV_SPIN      2008
 
 #define  IDC_TERMINAL         2009
+#define  IDC_WEBLINK          2010
+#define  IDC_VERNUM           2011
+#define  IDC_ABOUT            2012
 
 #define  IDT_TIMER_MAIN       3000
 
