@@ -23,7 +23,8 @@ IDI_APPICON   ICON      "lightray.ico"
 // IDC_LEDBMPS   BITMAP    "leds.tiny.bmp"
 
 IDD_MAIN_DIALOG DIALOGEX 200, 100, 330, 300
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+// STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+STYLE DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "WinaGrams"
 FONT 10, "Times New Roman"
@@ -72,7 +73,7 @@ BEGIN
     LTEXT           VerNum,IDC_VERNUM,                                      135, 15,  50,12
     LTEXT           "Copyright (c) 2010-2023  Derell Licht",IDC_STATIC,      36, 28, 150,12
     // PUSHBUTTON      "home.comcast.net/~derelict",IDC_WEBLINK,  36,54,100,12
-    LTEXT           "http://www.derelllicht.com/freeware.html",IDC_WEBLINK,  36,41,140,12
+    LTEXT           "http://derelllicht.42web.io/freeware.html",IDC_WEBLINK,  36,41,140,12
     DEFPUSHBUTTON   "Close",IDOK,36,55,100,14
 END
 
