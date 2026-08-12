@@ -84,6 +84,9 @@
 #include "winagrams.h"
 #include "cterminal.h"
 
+// NOLINTBEGIN(cppcoreguidelines-no-malloc)
+// NOLINTBEGIN(cppcoreguidelines-owning-memory)
+
 //  winagrams.cpp
 extern CTerminal *myTerminal ;
 
@@ -249,7 +252,7 @@ void find_anagrams(HWND hwnd)
    char input_bfr[MAX_PKT_CHARS+1] ;
    uint input_bfr_len = GetWindowTextA (GetDlgItem(hwnd,IDC_PHRASE) , input_bfr, MAX_PKT_CHARS);
    if (input_bfr_len > MAX_PKT_CHARS) 
-       input_bfr_len = MAX_PKT_CHARS ;
+       input_bfr_len = MAX_PKT_CHARS ; // NOLINT(clang-analyzer-deadcode.DeadStores)
    input_bfr[MAX_PKT_CHARS] = 0 ;
    if (vflag)  //lint !e506 !e774
       syslog("find_anagrams: [%u] [%s]\n", input_bfr_len, input_bfr) ;
@@ -343,7 +346,7 @@ char *get_dict_filename(void)
  */
 static cell_t *buildwordlist (void)
 {
-   register char *cp;           /* Temporary for word-grubbing */
+    char *cp;           /* Temporary for word-grubbing */
    char *word;                  /* Candidate word from dictionary */
    char realword[32];           /* Exactly as read from dictionary */
    cell_t *head = NULL;         /* Head of the linked list */
@@ -353,7 +356,8 @@ static cell_t *buildwordlist (void)
    int len;                     /* store length of candidate word */
    if (vflag)  //lint !e506 !e774
       syslog("reading [%s]\n", word_list_name);
-   FILE *fd = fopen (word_list_name, "rt");
+   // FILE *fd = fopen (word_list_name, "rt");
+   unique_file fd(fopen (word_list_name, "rt")) ;
    if (fd == NULL) {
       syslog("%s: %s", word_list_name, strerror(errno)) ;
       return NULL;
@@ -362,7 +366,7 @@ static cell_t *buildwordlist (void)
    nwords = 0;                  /* number of words in wordlist */
    // while (fgets(realword, sizeof(realword), stdin) != NULL) {
    uint read_lines = 0 ;
-   while (fgets (realword, sizeof (realword), fd) != NULL) {
+   while (fgets (realword, sizeof (realword), fd.get()) != NULL) {
       read_lines++ ;
       /*
        * Zap the newline
@@ -385,10 +389,10 @@ static cell_t *buildwordlist (void)
       }
       else {
          static char buf[32];
-         register char *rp, *wp;
-         register int differ = 0;
+          char *rp, *wp;
+          int differ = 0;
          for (rp = realword, wp = buf; *rp != '\0'; rp++) {
-            if (*rp >= 'a'  &&  *rp <= 'z') {
+            if (*rp >= 'a'  &&  *rp <= 'z') {   // NOLINT(bugprone-branch-clone)
                *wp++ = *rp;
             } else 
             if (*rp >= '0'  &&  *rp <= '9') {
@@ -463,7 +467,7 @@ static cell_t *buildwordlist (void)
          if (len == cellp->wordlen && sameletters (word, cellp->word)) {
             /* Seen one like this before.
              * Put it on the idem list */
-            register idem_t *newidem;
+             idem_t *newidem;
             newidem = (idem_t *) malloc (sizeof (idem_t));
             if (newidem == NULL) {
                syslog("build word list: out of memory\n");
@@ -523,7 +527,7 @@ static cell_t *buildwordlist (void)
    }
    if (vflag)  //lint !e506 !e774
       syslog("%d [%u] suitable words found\n", nwords, read_lines);
-   fclose (fd);   
+   // fclose (fd);   
    return (head);
 }
 
@@ -540,7 +544,7 @@ static int sameletters (char *word1, char *word2)
       init_done = true ;
    }
    
-   register char *cp;           /* to skip through words */
+    char *cp;           /* to skip through words */
    for (cp = word1; *cp != '\0'; cp++)
       slfreq[(uint) (u8) *cp]++;
    for (cp = word2; *cp != '\0'; cp++) {
@@ -576,9 +580,9 @@ static int islonger (char *first, char *second)
  */
 static cell_t *sort (cell_t * head)
 {
-   register cell_t **sortbase;  /* Array of pointers to cells */
-   register int i;              /* Loop index */
-   register cell_t *cp;         /* Loop index */
+    cell_t **sortbase;  /* Array of pointers to cells */
+    int i;              /* Loop index */
+    cell_t *cp;         /* Loop index */
    cell_t *newhead;             /* hold return value so we can free */
    sortbase = (cell_t **) malloc ((unsigned) nwords * sizeof (cell_t *));
    if (sortbase == NULL) {
@@ -645,12 +649,12 @@ static void findanags (int generation, cell_t * wordlt, int nleft)
 // cell_t *wordlt;     /* the tail of the wordlist we are to use */
 // int nleft;    /* number of unclaimed chars from key */
 {
-   register cell_t *cellp;      /* for tracing down the wordlist */
-   register char *cp;           /* for inspecting each word */
-   register int nl;             /* copy of nleft for munging */
-   register char *cp2;          /* temp for speed */
-   register cell_t *myhead = NULL;  /* list of words we found suitable */
-   register cell_t *mytail = NULL;  /* tail of our list of words */
+    cell_t *cellp;      /* for tracing down the wordlist */
+    char *cp;           /* for inspecting each word */
+    int nl;             /* copy of nleft for munging */
+    char *cp2;          /* temp for speed */
+    cell_t *myhead = NULL;  /* list of words we found suitable */
+    cell_t *mytail = NULL;  /* tail of our list of words */
 
    /*
     * Loop from the tail cell back up to and including the
@@ -741,8 +745,8 @@ static void print(int gen, int higen)
    static char *idlist[MAXWORDS];   /* list of our parents' words */
    if (gen == higen) {
       /* No further recursion; just print. */
-      register idem_t *ip;      /* follow down anagword[higen] */
-      register int i;           /* index along idlist */
+       idem_t *ip;      /* follow down anagword[higen] */
+       int i;           /* index along idlist */
       /* for each word in idemlist[gen], print the stem and it */
       for (ip = &(anagword[higen]->idem); ip != NULL; ip = ip->link) {
          char bfr[MAXWORDS+1] ;
@@ -754,7 +758,8 @@ static void print(int gen, int higen)
          }
          // puts (ip->word);
          // syslog("e%s ", ip->word) ;
-         slen += wsprintf(&bfr[slen], "%s ", ip->word) ;
+         // slen += 
+         wsprintf(&bfr[slen], "%s ", ip->word) ;
 
          if (!excluded_words_present(bfr)) {
             //  change this to stuff into a list, 
@@ -768,7 +773,7 @@ static void print(int gen, int higen)
    }
    else {
       /* recurse */
-      register idem_t *ip;
+       idem_t *ip;
       for (ip = &(anagword[gen]->idem); ip != NULL; ip = ip->link) {
          idlist[gen] = ip->word;
          print (gen + 1, higen);
@@ -798,8 +803,8 @@ static cell_t *forgelinks (cell_t * head)
  */
 static char *savestr (char *oldstr)
 {
-   register char *cp;           /* roving pointer for character-grubbing */
-   register char *np;           /* roving pointer into new string */
+    char *cp;           /* roving pointer for character-grubbing */
+    char *np;           /* roving pointer into new string */
    /* find end of string for length */
    // for (cp = oldstr; *cp != '\0'; cp++);
    uint old_len = strlen(oldstr) ;
@@ -813,3 +818,5 @@ static char *savestr (char *oldstr)
    return (newstr);
 }
 
+// NOLINTEND(cppcoreguidelines-owning-memory)
+// NOLINTEND(cppcoreguidelines-no-malloc)

@@ -68,10 +68,10 @@ CAPTION "About winagrams"
 // FONT 8, "MS Sans Serif"
 FONT 10, "Times New Roman"
 BEGIN
-    ICON            IDI_APPICON,IDC_STATIC,9,17
-    LTEXT           "Winagrams - Anagram Program",IDC_STATIC,                36, 15, 100,12
+    ICON            IDI_APPICON,                   IDC_STATIC,                9, 17, 0, 0
+    LTEXT           "Winagrams - Anagram Program", IDC_STATIC,               36, 15, 100,12
     LTEXT           VerNum,IDC_VERNUM,                                      135, 15,  50,12
-    LTEXT           "Copyright (c) 2010-2023  Derell Licht",IDC_STATIC,      36, 28, 150,12
+    LTEXT           "Copyright (c) 2010-2026  Derell Licht",IDC_STATIC,      36, 28, 150,12
     // PUSHBUTTON      "home.comcast.net/~derelict",IDC_WEBLINK,  36,54,100,12
     LTEXT           "http://derelllicht.42web.io/freeware.html",IDC_WEBLINK,  36,41,140,12
     DEFPUSHBUTTON   "Close",IDOK,36,55,100,14
@@ -104,7 +104,7 @@ BEGIN
             VALUE "FileDescription", "winagrams - Windows anagram program"
             VALUE "FileVersion", VerNum
             VALUE "InternalName", "winagrams"
-            VALUE "LegalCopyright", "Copyright © 2010-2023"
+            VALUE "LegalCopyright", "Copyright ï¿½ 2010-2023"
             VALUE "OriginalFilename", "winagrams.exe"
             VALUE "ProductName", "winagrams - Windows anagram program"
             VALUE "ProductVersion", VerNum

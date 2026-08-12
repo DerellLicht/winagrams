@@ -3,3 +3,4 @@
 *.bak
 *.zip
 _lint.tmp
+output.*

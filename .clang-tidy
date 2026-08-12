@@ -1,0 +1,56 @@
+#https://clang.llvm.org/extra/clang-tidy/#id2
+
+# checks to revisit once this is under control:
+# cppcoreguidelines-pro-bounds-constant-array-index — revisit w/ gsl::at, not urgent
+# cppcoreguidelines-init-variables
+# modernize-use-nullptr
+# modernize-deprecated-headers
+# modernize-use-auto
+# modernize-use-bool-literals
+# performance-no-int-to-ptr
+# der_libs/common_funcs.cpp:292:10: warning: do not access members of unions; 
+#    consider using (boost::)variant instead 
+#    [cppcoreguidelines-pro-type-union-access]
+
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  -bugprone-switch-missing-default-case,
+  clang-analyzer-*,
+  clang-diagnostic-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-macro-to-enum,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-type-cstyle-cast,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-avoid-goto,
+  -cppcoreguidelines-init-variables,
+  -cppcoreguidelines-pro-type-union-access,
+  -cppcoreguidelines-narrowing-conversions,
+  -cppcoreguidelines-use-default-member-init,
+  modernize-*,
+  -modernize-avoid-c-arrays,
+  -modernize-use-trailing-return-type,
+  -modernize-redundant-void-arg,
+  -modernize-use-using,
+  -modernize-macro-to-enum,
+  -modernize-use-nullptr,
+  -modernize-avoid-c-style-cast,
+  -modernize-deprecated-headers,
+  -modernize-use-auto,
+  -modernize-avoid-variadic-functions,
+  -modernize-use-bool-literals,
+  -cppcoreguidelines-avoid-do-while,
+  -modernize-use-default-member-init,
+  performance-*,
+  -performance-no-int-to-ptr,
+  

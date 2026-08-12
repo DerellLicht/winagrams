@@ -1,15 +1,20 @@
 #SHELL=cmd.exe
 USE_DEBUG = NO
+USE_UNICODE = NO
+USE_CLANG = YES
+
+include der_libs\tool_select.mak
 
 ifeq ($(USE_DEBUG),YES)
-CFLAGS=-Wall -O -g
+CFLAGS=-Wall -O -g -c
 LFLAGS=
 else
-CFLAGS=-Wall -O3
+CFLAGS=-Wall -O3 -c
 LFLAGS=-s
 endif
 CFLAGS += -Wno-write-strings
 CFLAGS += -Weffc++
+CFLAGS += -Wno-c++11-narrowing
 
 # link library files
 CFLAGS += -Ider_libs
@@ -28,10 +33,13 @@ CSRC+=winagrams.cpp anagram.cpp thread.cpp about.cpp
 OBJS = $(CSRC:.cpp=.o) rc.o
 
 BIN=winagrams
+BINS=$(BIN).exe
+
+LIBS = -lcomdlg32 -lgdi32
 
 #************************************************************
 %.o: %.cpp
-	g++ $(CFLAGS) -c $< -o $@
+	$(TOOLS)/$(GNAME) $(CFLAGS) $< -o $@
 
 all: $(BIN).exe
 
@@ -40,10 +48,25 @@ clean:
 
 dist:
 	rm -f *.zip
-	zip $(BIN).zip $(BIN).exe readme.md dict
+	zip $(BIN).zip $(BINS) readme.md dict
 
-lint:
-	cmd /C "c:\lint9\lint-nt +v -width(160,4) -ic:\lint9 -ider_libs mingw.lnt -os(_lint.tmp) lintdefs.cpp $(CSRC)"
+ctidy_all:
+	cmd /C "clang-tidy $(CSRC) -- $(CFLAGS) 2>&1 | grep -oP '\[\K[a-z][a-z0-9-]+(?=\]$$)' | sort | uniq -c | sort -rn"
+
+ctidy_local:
+	cmd /C "clang-tidy $(CAPPSRC) -- $(CFLAGS) 2>&1 | grep -oP '\[\K[a-z][a-z0-9-]+(?=\]$$)' | sort | uniq -c | sort -rn"
+
+ctidy_libs:
+	cmd /C "clang-tidy $(CLIBSRC) -- $(CFLAGS) 2>&1 | grep -oP '\[\K[a-z][a-z0-9-]+(?=\]$$)' | sort | uniq -c | sort -rn"
+
+clint:
+	cmd /C "python ..\ClaudeLint.py --exclude der_libs"
+	
+cppc:
+	cmd /C "cppcheck --project=compile_commands.json --std=c++14 --suppressions-list=./.suppress.cppcheck"
+
+check:
+	cmd /C "d:\llvm\bin\clang-tidy.exe $(CSRC) -- $(CFLAGS) "
 
 depend:
 	makedepend $(CFLAGS) $(CSRC)
@@ -53,13 +76,11 @@ anagram:
 
 #************************************************************
 
-$(BIN).exe: $(OBJS)
-	g++ $(CFLAGS) -mwindows -s $(OBJS) -o $@ -lcomctl32
-
-#	\\InnoSetup5\iscc /Q winagrams.iss
+$(BINS): $(OBJS)
+	$(TOOLS)/$(GNAME) $(OBJS) $(LFLAGS) -o $(BINS) $(LIBS) 
 
 rc.o: winagrams.rc 
-	windres $< -O coff -o $@
+	$(TOOLS)\$(WRNAME) $< -O COFF -o $@
 
 # DO NOT DELETE
 

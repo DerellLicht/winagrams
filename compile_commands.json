@@ -1,0 +1,206 @@
+[
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/common_funcs.cpp",
+   "-o",
+   "der_libs/common_funcs.o"
+  ],
+  "file": "der_libs/common_funcs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/common_win.cpp",
+   "-o",
+   "der_libs/common_win.o"
+  ],
+  "file": "der_libs/common_win.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/hyperlinks.cpp",
+   "-o",
+   "der_libs/hyperlinks.o"
+  ],
+  "file": "der_libs/hyperlinks.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/statbar.cpp",
+   "-o",
+   "der_libs/statbar.o"
+  ],
+  "file": "der_libs/statbar.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/wthread.cpp",
+   "-o",
+   "der_libs/wthread.o"
+  ],
+  "file": "der_libs/wthread.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/winmsgs.cpp",
+   "-o",
+   "der_libs/winmsgs.o"
+  ],
+  "file": "der_libs/winmsgs.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/cterminal.cpp",
+   "-o",
+   "der_libs/cterminal.o"
+  ],
+  "file": "der_libs/cterminal.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "der_libs/vlistview.cpp",
+   "-o",
+   "der_libs/vlistview.o"
+  ],
+  "file": "der_libs/vlistview.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "winagrams.cpp",
+   "-o",
+   "winagrams.o"
+  ],
+  "file": "winagrams.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "anagram.cpp",
+   "-o",
+   "anagram.o"
+  ],
+  "file": "anagram.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "thread.cpp",
+   "-o",
+   "thread.o"
+  ],
+  "file": "thread.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "about.cpp",
+   "-o",
+   "about.o"
+  ],
+  "file": "about.cpp"
+ }
+]
