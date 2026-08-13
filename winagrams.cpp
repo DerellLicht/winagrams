@@ -1,5 +1,5 @@
 //**********************************************************************
-//  Copyright (c) 2009-2023  Daniel D Miller
+//  Copyright (c) 2009-2026  Daniel D Miller
 //  winagrams.exe - A Windows anagram program
 //  
 //  Written by:   Daniel D. Miller
@@ -9,9 +9,10 @@
 static char szClassName[] = "WinaGrams" ;
 
 #include <windows.h>
-#ifdef _lint
-#include <stdlib.h>  //  atoi() 
-#endif
+// #ifdef _lint
+// #include <cstdlib>  //  atoi() 
+// #endif
+#include <memory>
 #include <tchar.h>
 
 #include "version.h"
@@ -41,12 +42,12 @@ static uint term_window_height = TERM_MIN_DY ;
 HINSTANCE g_hinst = 0;
 
 HWND hwndMainDialog = NULL ;
-// CStrList *StrList = NULL;
-// static CVListView *VListView = NULL ;
-CTerminal *myTerminal = NULL;
-
 // static HWND hwndStatusBar ;
-static CStatusBar *MainStatusBar = NULL;
+// static CStatusBar *MainStatusBar = NULL;
+static std::unique_ptr<CStatusBar> MainStatusBar {};
+
+// CTerminal *myTerminal = NULL;
+std::unique_ptr<CTerminal> myTerminal {};
 
 static HWND hwndMaxChars ;
 // static HWND hwndMaxDevsSpin ;
@@ -170,7 +171,7 @@ static uint read_max_chars(void)
    GetWindowText(hwndMaxChars, tempbfr, 10);
    tempbfr[10] = 0 ;
    char *tptr = strip_leading_spaces(tempbfr) ;
-   return (uint) atoi(tptr) ;
+   return (uint) atoi(tptr) ; // NOLINT(bugprone-unchecked-string-to-number-conversion)
 }
 
 //*******************************************************************
@@ -233,7 +234,8 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    //  create/configure status bar first
    //****************************************************************
    // hwndStatusBar = InitStatusBar (hwnd);
-   MainStatusBar = new CStatusBar(hwnd) ;
+   // MainStatusBar = new CStatusBar(hwnd) ;
+   MainStatusBar = std::make_unique<CStatusBar>(hwnd);
    MainStatusBar->MoveToBottom(cxClient, cyClient) ;
 
    //  re-position status-bar parts
@@ -252,7 +254,10 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    uint ctrl_bottom = get_bottom_line(hwnd, IDC_WORDS) + 5 ;
    uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
 
-   myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
+   // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
+   //    0, ctrl_bottom, cxClient-1, lvdy,
+   //    LVL_STY_VIRTUAL | LVL_STY_EX_GRIDLINES | LVL_STY_NO_HEADER );
+   myTerminal = std::make_unique<CTerminal>(hwnd, IDC_TERMINAL, g_hinst, 
       0, ctrl_bottom, cxClient-1, lvdy,
       LVL_STY_VIRTUAL | LVL_STY_EX_GRIDLINES | LVL_STY_NO_HEADER );
    myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;

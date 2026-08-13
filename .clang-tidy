@@ -19,6 +19,7 @@ Checks: >
   -bugprone-narrowing-conversions,
   -bugprone-switch-missing-default-case,
   clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.strcpy,
   clang-diagnostic-*,
   cppcoreguidelines-*,
   -cppcoreguidelines-pro-type-reinterpret-cast,

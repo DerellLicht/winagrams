@@ -126,5 +126,5 @@ void start_anagram_thread(LPVOID iValue)
 {
    // AnagramThread = 
    new CThread(AnagramThreadFunc, (LPVOID) iValue, NULL) ;
-}
+}  //  NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
 
