@@ -20,6 +20,7 @@
 -----------------------------------------------------------------------------*/
 
 #include <windows.h>
+#include <cstdio>
 
 #include "resource.h"
 #include "version.h"
