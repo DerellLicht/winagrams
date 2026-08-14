@@ -9,9 +9,6 @@
 static char szClassName[] = "WinaGrams" ;
 
 #include <windows.h>
-// #ifdef _lint
-// #include <cstdlib>  //  atoi() 
-// #endif
 #include <memory>
 #include <vector>
 #include <tchar.h>
@@ -33,17 +30,6 @@ extern char *get_dict_filename(void);
 
 extern uint min_word_len ;
 
-// #define  TERM_MIN_DX    580
-// #define  TERM_MIN_DY    800
-
-// Claude 08/14/26 - smallest listview height (pixels) we'll allow the
-// live-resize floor to shrink down to, so a few rows stay visible/usable
-// no matter how far the user drags the bottom edge up.
-#define  MIN_LISTVIEW_VISIBLE_DY   80
-
-// static uint term_window_width  = TERM_MIN_DX ;
-// static uint term_window_height = TERM_MIN_DY ;
-//*************************************************************************
 #define  KEY_ACTIVE     1  
 
 HINSTANCE g_hinst = 0;
@@ -61,6 +47,11 @@ static HWND hwndMaxChars ;
 
 static uint cxClient = 0;
 static uint cyClient = 0;   //  subtrace height of status bar
+
+// Claude 08/14/26 - smallest listview height (pixels) we'll allow the
+// live-resize floor to shrink down to, so a few rows stay visible/usable
+// no matter how far the user drags the bottom edge up.
+#define  MIN_LISTVIEW_VISIBLE_DY   80
 
 // Claude 08/14/26
 // MINMAXINFO's ptMinTrackSize/ptMaxTrackSize are WINDOW (outer) dimensions,
@@ -453,7 +444,6 @@ static void resize_font_dialog()
    //    (long) myRect.left, (long) myRect.top, (long) myRect.right, (long) myRect.bottom,
    //    (int) gcr_ok, gcr_ok ? 0ul : (unsigned long) GetLastError());
 
-   //  why would new_window_height == 0 ??
    if (cyClient == new_window_height  ||  new_window_height == 0) {
        return ;
    }
@@ -462,15 +452,9 @@ static void resize_font_dialog()
 
    int dy_offset = get_dy_offset() ;
 
-   // Claude 08/14/26 - term_window_height now means "the listview's CURRENT
-   // height" and is recalculated every time we lay out, right below. It's
-   // no longer used as a min-track floor anywhere (see
-   // min_application_window_height in do_getminmaxinfo) -- so it's free to
-   // move on every resize without that side effect biting us again.
    MainStatusBar->MoveToBottom(cxClient, cyClient-1) ;
    //  resize the terminal (cols)
    int dyi = (int) cyClient - dy_offset - (int) get_terminal_top() - MainStatusBar->height() ;   //lint !e737
-   // term_window_height = (uint) dyi ;
    myTerminal->resize(cxClient-1, dyi); //  dialog is actually drawn a few pixels too small for text
 }
 
@@ -565,12 +549,9 @@ static bool do_getminmaxinfo(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
    //  width or Windows will fight the live window size every time this
    //  fires and can degenerate the rect mid-drag.
    //
-   //  Height floor comes from min_application_window_height, NOT
-   //  term_window_height -- term_window_height is recalculated on every
-   //  resize now (it tracks the listview's current height), so by the time
-   //  a live drag samples it, it's already moved. min_application_window_height
-   //  is computed once in do_init_dialog and never changes, which is what a
-   //  track-size floor needs to be.
+   //  Height floor comes from min_application_window_height.
+   //  min_application_window_height is computed once in do_init_dialog 
+   //  and never changes, which is what a track-size floor needs to be.
    ptTemp.x = (LONG) cxClient + dx_frame ;
    ptTemp.y = (LONG) min_application_window_height ;
    lpTemp->ptMinTrackSize = ptTemp;
