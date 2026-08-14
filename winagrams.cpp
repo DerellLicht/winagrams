@@ -232,8 +232,6 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    GetClientRect(hwnd, &myRect) ;
    cxClient = (uint) (myRect.right - myRect.left) ;
    cyClient = (uint) (myRect.bottom - myRect.top) ;
-   // cyClient: 563, twwidth: 580
-   // syslog("cyClient: %u, twwidth: %u\n", cyClient, term_window_width);
 
    // Claude 08/14/26 - measure actual border/caption size once, from live
    // window+client rects, rather than guessing at SM_CXFRAME/SM_CYCAPTION
@@ -292,7 +290,6 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    {
    uint ctrl_bottom = get_bottom_line(hwnd, IDC_WORDS) + 5 ;
    uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
-   // term_window_height = lvdy ;
 
    // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
    //    0, ctrl_bottom, cxClient-1, lvdy,
