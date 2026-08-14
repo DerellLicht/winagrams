@@ -33,8 +33,8 @@ extern char *get_dict_filename(void);
 
 extern uint min_word_len ;
 
-#define  TERM_MIN_DX    580
-#define  TERM_MIN_DY    800
+// #define  TERM_MIN_DX    580
+// #define  TERM_MIN_DY    800
 
 // Claude 08/14/26 - smallest listview height (pixels) we'll allow the
 // live-resize floor to shrink down to, so a few rows stay visible/usable
@@ -42,7 +42,7 @@ extern uint min_word_len ;
 #define  MIN_LISTVIEW_VISIBLE_DY   80
 
 // static uint term_window_width  = TERM_MIN_DX ;
-static uint term_window_height = TERM_MIN_DY ;
+// static uint term_window_height = TERM_MIN_DY ;
 //*************************************************************************
 #define  KEY_ACTIVE     1  
 
@@ -301,7 +301,7 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    {
    uint ctrl_bottom = get_bottom_line(hwnd, IDC_WORDS) + 5 ;
    uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
-   term_window_height = lvdy ;
+   // term_window_height = lvdy ;
 
    // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
    //    0, ctrl_bottom, cxClient-1, lvdy,
@@ -470,7 +470,7 @@ static void resize_font_dialog()
    MainStatusBar->MoveToBottom(cxClient, cyClient-1) ;
    //  resize the terminal (cols)
    int dyi = (int) cyClient - dy_offset - (int) get_terminal_top() - MainStatusBar->height() ;   //lint !e737
-   term_window_height = (uint) dyi ;
+   // term_window_height = (uint) dyi ;
    myTerminal->resize(cxClient-1, dyi); //  dialog is actually drawn a few pixels too small for text
 }
 
