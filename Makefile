@@ -16,6 +16,10 @@ CFLAGS += -Wno-write-strings
 CFLAGS += -Weffc++
 CFLAGS += -Wno-c++11-narrowing
 
+ifeq ($(USE_STATIC),YES)
+LFLAGS += -static
+endif
+
 # link library files
 CFLAGS += -Ider_libs
 CSRC=der_libs/common_funcs.cpp \
