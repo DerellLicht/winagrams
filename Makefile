@@ -7,10 +7,10 @@ include der_libs\tool_select.mak
 
 ifeq ($(USE_DEBUG),YES)
 CFLAGS=-Wall -O -g -c
-LFLAGS=
+LFLAGS= -mwindows
 else
 CFLAGS=-Wall -O3 -c
-LFLAGS=-s
+LFLAGS=-s -mwindows
 endif
 CFLAGS += -Wno-write-strings
 CFLAGS += -Weffc++
@@ -95,7 +95,7 @@ der_libs/vlistview.o: der_libs/common.h der_libs/commonw.h
 der_libs/vlistview.o: der_libs/vlistview.h
 winagrams.o: version.h resource.h der_libs/common.h der_libs/commonw.h
 winagrams.o: winagrams.h der_libs/statbar.h der_libs/cterminal.h
-winagrams.o: der_libs/vlistview.h
+winagrams.o: der_libs/vlistview.h der_libs/winmsgs.h
 anagram.o: resource.h der_libs/common.h winagrams.h der_libs/cterminal.h
 anagram.o: der_libs/vlistview.h
 thread.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
