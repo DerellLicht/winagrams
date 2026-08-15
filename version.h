@@ -20,5 +20,6 @@
 //                 led zeppelin kiss ! zip zen
 //    1.07     Add About dialog, do other code modernization
 //    1.08     Claude helped clean up my dialog-resizing issues
+//    1.09     Add config file, save/restore position and height
 //****************************************************************************
-#define VerNum    "V1.08"
+#define VerNum    "V1.09"
