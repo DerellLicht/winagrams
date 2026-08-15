@@ -202,5 +202,22 @@
    "about.o"
   ],
   "file": "about.cpp"
+ },
+ {
+  "directory": "D:\\SourceCode\\Git\\winagrams",
+  "arguments": [
+   "d:/llvm/bin/i686-w64-mingw32-clang++",
+   "-Wall",
+   "-O3",
+   "-c",
+   "-Wno-write-strings",
+   "-Weffc++",
+   "-Wno-c++11-narrowing",
+   "-Ider_libs",
+   "config.cpp",
+   "-o",
+   "config.o"
+  ],
+  "file": "config.cpp"
  }
 ]

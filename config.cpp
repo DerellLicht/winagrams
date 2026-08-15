@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2016  Daniel D Miller
+//  Copyright (c) 2008-2026  Daniel D Miller
 //  config.cpp - manage configuration data file
 //
 //  Produced and Directed by:  Dan Miller
@@ -12,8 +12,9 @@
 //  Subsequent file will have a section for each device.
 //****************************************************************************
 #include <windows.h>
-#include <stdio.h>   //  fopen, etc
-#include <stdlib.h>  //  atoi()
+#include <cstdio>   //  fopen, etc
+#include <cstdlib>  //  atoi()
+#include <memory>
 
 #include "common.h"
 #include "winagrams.h"
@@ -43,18 +44,19 @@ LRESULT save_cfg_file(void)
 {
    client_height = cyClient ;
    char *fname = ini_name ;
-   FILE *fd = fopen(fname, "wt") ;
+   // FILE *fd = fopen(fname, "wt") ;
+   unique_file fd(fopen(fname, "wt")) ;
    if (fd == 0) {
       LRESULT result = (LRESULT) GetLastError() ;
       syslog("%s open: %s\n", fname, get_system_message(result)) ;
       return result;
    }
    //  save any global vars
-   fprintf(fd, "dbg_flags=0x%X\n", dbg_flags) ;
-   fprintf(fd, "window_top=%u\n", window_top) ;
-   fprintf(fd, "window_left=%u\n", window_left) ;
-   fprintf(fd, "client_height=%u\n", client_height) ;
-   fclose(fd) ;
+   fprintf(fd.get(), "dbg_flags=0x%X\n", dbg_flags) ;
+   fprintf(fd.get(), "window_top=%u\n", window_top) ;
+   fprintf(fd.get(), "window_left=%u\n", window_left) ;
+   fprintf(fd.get(), "client_height=%u\n", client_height) ;
+   // fclose(fd) ;
    return ERROR_SUCCESS;
 }
 
@@ -78,13 +80,14 @@ LRESULT init_config(void)
    // if (dbg_flags & DBG_VERBOSE)
    //    syslog("INI fname=%s\n", ini_name) ;
 
-   FILE *fd = fopen(ini_name, "rt") ;
+   // FILE *fd = fopen(ini_name, "rt") ;
+   unique_file fd(fopen(ini_name, "rt")) ;
    if (fd == 0) {
       return save_cfg_file() ;
    }
 
    // uint local_max_devs = 0 ;
-   while (fgets(inpstr, sizeof(inpstr), fd) != 0) {
+   while (fgets(inpstr, sizeof(inpstr), fd.get()) != 0) {
       strip_comments(inpstr) ;
       strip_newlines(inpstr) ;
       if (strlen(inpstr) == 0)
@@ -120,7 +123,7 @@ LRESULT init_config(void)
       }
 
    }
-   fclose(fd) ;
+   // fclose(fd) ;
    return 0;
 }
 
