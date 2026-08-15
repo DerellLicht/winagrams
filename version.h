@@ -19,5 +19,6 @@
 //             Example:
 //                 led zeppelin kiss ! zip zen
 //    1.07     Add About dialog, do other code modernization
+//    1.08     Claude helped clean up my dialog-resizing issues
 //****************************************************************************
-#define VerNum    "V1.07"
+#define VerNum    "V1.08"
