@@ -19,9 +19,9 @@
 #include "common.h"
 #include "winagrams.h"
 
-uint window_top = 100 ;
-uint window_left = 200 ;
-uint client_height = 120 ;
+uint window_left = 500 ;
+uint window_top = 200 ;
+uint client_height = 300 ;
 static char ini_name[MAX_PATH_LEN+1] = "" ;
 
 //****************************************************************************

@@ -206,6 +206,52 @@ static uint read_max_chars(void)
    return (uint) atoi(tptr) ; // NOLINT(bugprone-unchecked-string-to-number-conversion)
 }
 
+//****************************************************************
+//  Claude 08/15/26 - restore previously-saved window size/position
+//  from the .ini file. client_height/window_left/window_top were
+//  populated by init_config() above (which creates a default config
+//  file if one doesn't exist yet, so these are always valid here --
+//  no first-run guard needed). Width is never saved/restored since
+//  it's always locked to the dialog's fixed layout.
+//****************************************************************
+static void restore_dialog_settings(void)
+{
+   uint restored_win_width  = cxClient + (uint) dx_frame ;   //  width never changes
+   uint restored_win_height = client_height + (uint) dy_frame ;
+
+   //  clamp height to the same bounds WM_GETMINMAXINFO enforces --
+   //  screen resolution may have changed since this was last saved
+   if (restored_win_height < min_application_window_height) {
+      restored_win_height = min_application_window_height ;
+   }
+   uint max_win_height = (uint) get_screen_height() ;
+   if (restored_win_height > max_win_height) {
+      restored_win_height = max_win_height ;
+   }
+
+   //  clamp position to the current monitor (get_screen_width/height
+   //  reflect get_monitor_dimens(hwnd), already called above) so a saved
+   //  position from a monitor that's since been unplugged, or a screen
+   //  res that's since shrunk, doesn't put us off-screen
+   uint restored_left = window_left ;
+   uint restored_top  = window_top ;
+   uint scr_cx = (uint) get_screen_width() ;
+   uint scr_cy = (uint) get_screen_height() ;
+   if (restored_left + restored_win_width > scr_cx) {
+      restored_left = (restored_win_width < scr_cx) ? (scr_cx - restored_win_width) : 0 ;
+   }
+   if (restored_top + restored_win_height > scr_cy) {
+      restored_top = (restored_win_height < scr_cy) ? (scr_cy - restored_win_height) : 0 ;
+   }
+
+   //  applying this here (after all child controls exist) triggers
+   //  WM_SIZE synchronously, which runs resize_font_dialog() and lays
+   //  out the status bar/listview/etc. for the restored height --
+   //  no separate relayout call needed
+   SetWindowPos(hwndMainDialog, NULL, (int) restored_left, (int) restored_top,
+      (int) restored_win_width, (int) restored_win_height, SWP_NOZORDER) ;
+}
+
 //*******************************************************************
 static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -306,6 +352,10 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    //  start up the separate thread which will handle anagram calcs
    start_anagram_thread(NULL) ;
    // main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 100, (TIMERPROC) NULL) ;
+
+   //  restore previously-saved window size/position from the .ini file. 
+   restore_dialog_settings();
+
    return true ;
 }
 
