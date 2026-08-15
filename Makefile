@@ -21,7 +21,7 @@ LFLAGS += -static
 endif
 
 # link application-specific sources
-CSRC=winagrams.cpp anagram.cpp thread.cpp about.cpp
+CSRC=winagrams.cpp anagram.cpp thread.cpp about.cpp config.cpp
 
 # link library files
 CFLAGS += -Ider_libs
@@ -100,6 +100,7 @@ anagram.o: der_libs/vlistview.h
 thread.o: resource.h der_libs/common.h der_libs/commonw.h winagrams.h
 thread.o: der_libs/wthread.h
 about.o: resource.h version.h der_libs/hyperlinks.h
+config.o: der_libs/common.h winagrams.h
 der_libs/common_funcs.o: der_libs/common.h
 der_libs/common_win.o: der_libs/common.h der_libs/commonw.h
 der_libs/hyperlinks.o: der_libs/iface_32_64.h der_libs/hyperlinks.h

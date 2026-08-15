@@ -30,6 +30,14 @@ extern char *get_dict_filename(void);
 
 extern uint min_word_len ;
 
+//*******************************************************************
+// #define WM_CHANGEUISTATE 0x0127
+
+//  thread.cpp
+extern HWND hwndCommTask ;
+extern void start_anagram_thread(LPVOID iValue);
+
+//*******************************************************************
 #define  KEY_ACTIVE     1  
 
 HINSTANCE g_hinst = 0;
@@ -46,8 +54,9 @@ static HWND hwndMaxChars ;
 // static HWND hwndMaxDevsSpin ;
 
 static uint cxClient = 0;
-static uint cyClient = 0;   //  subtrace height of status bar
+uint cyClient = 0;
 
+//*******************************************************************
 // Claude 08/14/26 - smallest listview height (pixels) we'll allow the
 // live-resize floor to shrink down to, so a few rows stay visible/usable
 // no matter how far the user drags the bottom edge up.
@@ -187,15 +196,6 @@ static void copy_selected_rows(void)
    myTerminal->clear_marked_elements() ;
 }
 
-//*******************************************************************
-//  handlers for message window
-//*******************************************************************
-
-//*******************************************************************
-// static void process_comm_task_done(HWND hwnd)
-// {
-// }  //lint !e715
-
 //****************************************************************************
 static uint read_max_chars(void)
 {
@@ -207,25 +207,20 @@ static uint read_max_chars(void)
 }
 
 //*******************************************************************
-// #define WM_CHANGEUISTATE 0x0127
-
-//  thread.cpp
-extern HWND hwndCommTask ;
-extern void start_anagram_thread(LPVOID iValue);
-
-//*******************************************************************
 static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    char msgstr[81] ;
    RECT myRect ;
    wsprintf(msgstr, "%s %s", szClassName, VerNum) ;
    SetWindowText(hwnd, msgstr) ;
-   //  the following should enable the busy cursor,
-   //  but it doesn't actually work!!
-   SetClassLong(hwnd,GCL_HCURSOR,(long) 0);  //  disable class cursor 
 
    get_monitor_dimens(hwnd);
    hwndMainDialog = hwnd ;
+
+   init_config();
+   // syslog("config: window pos: %ux%u, dy: %u\n", window_left, window_top, client_height) ;
+   // config: window pos: 1408x224, dy: 511
+   
    //  read configuration *before* creating edit fields
    // read_config_file() ;
    // GetWindowRect(hwnd, &myRect) ;
@@ -258,24 +253,23 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    hwndMaxChars = GetDlgItem(hwnd, IDC_MAX_CHARS) ;
 
    //  now, create the spin control for this field
-   // hwndMaxDevsSpin = CreateUpDownControl(
    MyCreateUpDownControl(
       // WS_CHILD|WS_VISIBLE|UDS_SETBUDDYINT|UDS_ALIGNRIGHT|WS_BORDER,
       // 0, 0, 0, 0,
-      hwnd,           //parent handle
-      IDC_MAXDEV_SPIN,    //updown ID
-      g_hinst,        //instance handle
-      hwndMaxChars,           //buddy, if stand alone set to NULL
-      10,                        //max value
-      1,                         //min value
-      min_word_len); //start of value
+      hwnd,             // parent handle
+      IDC_MAXDEV_SPIN,  // updown ID
+      g_hinst,          // instance handle
+      hwndMaxChars,     // buddy, if stand alone set to NULL
+      10,               // max value
+      1,                // min value
+      min_word_len);    // start of value
 
    //****************************************************************
    //  create/configure status bar first
    //****************************************************************
    MainStatusBar = std::make_unique<CStatusBar>(hwnd);
    MainStatusBar->MoveToBottom(cxClient, cyClient) ;
-   //  re-position status-bar parts
+   //  define status-bar parts
    {
    int sbparts[3];
    sbparts[0] = (int) (5 * cxClient / 10) ;
@@ -284,22 +278,6 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    MainStatusBar->SetParts(2, &sbparts[0]);
    }
    
-   //****************************************************************
-   //  create listview class second, needs status-bar height
-   //****************************************************************
-   {
-   uint ctrl_bottom = get_bottom_line(hwnd, IDC_WORDS) + 5 ;
-   uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
-
-   // myTerminal = new CTerminal(hwnd, IDC_TERMINAL, g_hinst, 
-   //    0, ctrl_bottom, cxClient-1, lvdy,
-   //    LVL_STY_VIRTUAL | LVL_STY_EX_GRIDLINES | LVL_STY_NO_HEADER );
-   myTerminal = std::make_unique<CTerminal>(hwnd, IDC_TERMINAL, g_hinst, 
-      0, ctrl_bottom, cxClient-1, lvdy,
-      LVL_STY_VIRTUAL | LVL_STY_EX_GRIDLINES | LVL_STY_NO_HEADER );
-   myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
-   myTerminal->lview_assign_column_headers() ;
-
    // Claude 08/14/26 - the real, permanent floor for WM_GETMINMAXINFO.
    // Same shape as resize_font_dialog's live layout math, just solved for
    // the smallest acceptable listview height (MIN_LISTVIEW_VISIBLE_DY)
@@ -307,12 +285,25 @@ static bool do_init_dialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
    // again -- see the comment on the variable itself.
    min_application_window_height = get_terminal_top() + MIN_LISTVIEW_VISIBLE_DY
       + MainStatusBar->height() + (uint) get_dy_offset() + (uint) dy_frame ;
-   }
 
+   //****************************************************************
+   //  create listview class second, needs status-bar height
+   //****************************************************************
+   {
+   uint ctrl_bottom = get_bottom_line(hwnd, IDC_WORDS) + 5 ;
+   uint lvdy = cyClient - ctrl_bottom - MainStatusBar->height() ;
+
+   myTerminal = std::make_unique<CTerminal>(hwnd, IDC_TERMINAL, g_hinst, 
+      0, ctrl_bottom, cxClient-1, lvdy,
+      LVL_STY_VIRTUAL | LVL_STY_EX_GRIDLINES | LVL_STY_NO_HEADER );
+   myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
+   myTerminal->lview_assign_column_headers() ;
+   }
+   
    //  update other screen data
    SetDlgItemText(hwnd, IDC_WORDS, get_dict_filename()) ;
 
-   //  start up the separate thread which will handle 
+   //  start up the separate thread which will handle anagram calcs
    start_anagram_thread(NULL) ;
    // main_timer_id = SetTimer(hwnd, IDT_TIMER_MAIN, 100, (TIMERPROC) NULL) ;
    return true ;
@@ -343,14 +334,6 @@ static bool do_command(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
    } 
    return false ;
 }
-
-//*******************************************************************
-// static bool do_comm_task_done(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-// {
-//    process_comm_task_done(hwnd) ;
-//    // SetWindowPos (this_port->hwndCport, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE );
-//    return true ;
-// }
 
 //*******************************************************************
 static bool do_notify(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -422,10 +405,6 @@ static bool do_destroy(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 //  which included the unwanted border area, rather than from
 //  GetClientRect(), which works with get_bottom_line().
 //********************************************************************************************
-//  04/26/13 
-//  WM_SIZING is generated every pixel or two of movement; we *wont* want to be resizing
-//  the entire dialog that frequently!!  We need to somehow slow this down a bit...
-//********************************************************************************************
 static void resize_font_dialog()
 {
    RECT myRect ;
@@ -451,22 +430,16 @@ static void resize_font_dialog()
 
    MainStatusBar->MoveToBottom(cxClient, cyClient-1) ;
    //  resize the terminal (cols)
-   int dyi = (int) cyClient - dy_offset - (int) get_terminal_top() - MainStatusBar->height() ;   //lint !e737
+   int dyi = (int) cyClient - dy_offset - (int) get_terminal_top() - MainStatusBar->height() ;
    myTerminal->resize(cxClient-1, dyi); //  dialog is actually drawn a few pixels too small for text
+   
+   save_cfg_file();
 }
 
 //*************************************************************************************
 // Claude: WM_SIZE — this is the only place you actually move/resize child controls. 
 // Dialogs don't auto-relayout children on resize; you compute the height delta 
 // and grow the listview by exactly that much, leaving the top controls alone.
-//*************************************************************************************
-//  Claude 08/14/26 - diagnostic: WM_SIZE's own wParam/lParam carry the size
-//  type and the new client width/height that Windows computed. Logging them
-//  here, before resize_font_dialog does its own GetClientRect(), tells us
-//  whether the 0-height is something Windows itself sent (lParam already
-//  0), or something that only shows up when we separately re-query via
-//  GetClientRect() a moment later (lParam nonzero, GetClientRect() says 0).
-//  Those point at very different bugs.
 //*************************************************************************************
 // static const char *size_type_name(WPARAM wParam)
 // {
@@ -538,7 +511,7 @@ static bool do_getminmaxinfo(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
    LPMINMAXINFO lpTemp = (LPMINMAXINFO) lParam;
    POINT        ptTemp;
    // syslog("set minimum to %ux%u\n", cxClient, cyClient);
-   //  set minimum dimensions
+   
    //  Claude 08/14/26 - cxClient is a CLIENT-area size; ptMinTrackSize/
    //  ptMaxTrackSize must be WINDOW sizes (border+caption included), so add
    //  the frame delta captured at init. Width is pinned min==max to lock
@@ -549,6 +522,8 @@ static bool do_getminmaxinfo(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
    //  Height floor comes from min_application_window_height.
    //  min_application_window_height is computed once in do_init_dialog 
    //  and never changes, which is what a track-size floor needs to be.
+   
+   //  set minimum dimensions
    ptTemp.x = (LONG) cxClient + dx_frame ;
    ptTemp.y = (LONG) min_application_window_height ;
    lpTemp->ptMinTrackSize = ptTemp;
@@ -564,35 +539,16 @@ static bool do_getminmaxinfo(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 }
 
 //*******************************************************************
-// Belt-and-suspenders width lock: overwrites the actual pending
-// rect directly, rather than relying solely on WM_GETMINMAXINFO's
-// answer being honored. See the comment in InitLayout() for why.
-//*******************************************************************
-static bool do_windowposchanging(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-//    WINDOWPOS *wp = reinterpret_cast<WINDOWPOS *>(lParam);
-//    bool isResize = !(wp->flags & SWP_NOSIZE);
-//    if (isResize && g_layout.initialClientHeight != 0)
-//    {
-//        wp->x =  g_layout.lockedWindowLeft;
-//        wp->cx = g_layout.lockedWindowWidth;
-//    }
-   return TRUE ;
-}
-
-//*******************************************************************
-static bool show_messages = false ;
-
 static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-   if (show_messages) {   //lint !e506 !e774
+   if (dbg_flags != 0) {
       switch (message) {
       //  list messages to be ignored
       // case WM_MOUSEMOVE:
-      case WM_NCMOUSEMOVE:
       // case WM_NCHITTEST:
-      case WM_SETCURSOR:
       // case WM_NOTIFY:
+      case WM_NCMOUSEMOVE:
+      case WM_SETCURSOR:
       case WM_COMMAND:  //  prints its own msgs below
          break;
       default:
@@ -602,39 +558,55 @@ static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
    }
    
    switch (message) {
-      case WM_INITDIALOG:
-         // InitLayout(hDlg);
-         do_init_dialog(hwnd, message, wParam, lParam) ;
-         return TRUE;
+   case WM_INITDIALOG:
+      do_init_dialog(hwnd, message, wParam, lParam) ;
+      return TRUE;
 
-      case WM_GETMINMAXINFO:
-         do_getminmaxinfo(hwnd, message, wParam, lParam) ;
-         return 0;
+   case WM_GETMINMAXINFO:
+      do_getminmaxinfo(hwnd, message, wParam, lParam) ;
+      return FALSE;
 
-      case WM_WINDOWPOSCHANGING:
-         do_windowposchanging(hwnd, message, wParam, lParam) ;
-         return TRUE ;
+   case WM_EXITSIZEMOVE:
+      {
+      RECT rect ;
+      GetWindowRect(hwnd, &rect);
+      window_top = rect.top ;
+      window_left = rect.left ;
+      save_cfg_file();
+      }
+      break ;
+   
+   case WM_WINDOWPOSCHANGING:
+      {
+      WINDOWPOS* pos = (WINDOWPOS*)lParam;
+      if (!(pos->flags & SWP_NOSIZE))
+         pos->cx = cxClient-1;   // hardcoded, no private_data needed
+      break;
+      }      
+      return TRUE ;
 
-      case WM_SIZE:
-         do_size(hwnd, message, wParam, lParam) ;
-         return TRUE ;
+   case WM_SIZE:
+      do_size(hwnd, message, wParam, lParam) ;
+      return TRUE ;
 
-      case WM_NOTIFY:
-         do_notify(hwnd, message, wParam, lParam) ;
-         return TRUE ;
+   case WM_NOTIFY:
+      do_notify(hwnd, message, wParam, lParam) ;
+      return TRUE ;
 
-      case WM_COMMAND:
-         do_command(hwnd, message, wParam, lParam) ;
-         return TRUE ;
+   case WM_COMMAND:
+      do_command(hwnd, message, wParam, lParam) ;
+      return TRUE ;
 
-      case WM_CLOSE:
-         do_close(hwnd, message, wParam, lParam) ;
-         return TRUE;
-         
-      case WM_DESTROY:
-         do_destroy(hwnd, message, wParam, lParam) ;
-         return TRUE;
-         
+   case WM_CLOSE:
+      do_close(hwnd, message, wParam, lParam) ;
+      return TRUE;
+      
+   case WM_DESTROY:
+      do_destroy(hwnd, message, wParam, lParam) ;
+      return TRUE;
+
+   default:         
+      return FALSE;
    }
    return FALSE;
 }
