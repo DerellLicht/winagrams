@@ -57,6 +57,9 @@ static uint cxClient = 0;
 uint cyClient = 0;
 
 //*******************************************************************
+//  *** BEGIN Claude resize data block
+//*******************************************************************
+//*******************************************************************
 // Claude 08/14/26 - smallest listview height (pixels) we'll allow the
 // live-resize floor to shrink down to, so a few rows stay visible/usable
 // no matter how far the user drags the bottom edge up.
@@ -83,6 +86,9 @@ static int dy_frame = 0;   //  window height - client height
 // and never modified afterward.
 static uint min_application_window_height = 0;
 
+//*******************************************************************
+//  *** END Claude resize data block
+//*******************************************************************
 //*******************************************************************
 void status_message(char *msgstr)
 {
