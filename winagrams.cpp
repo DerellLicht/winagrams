@@ -487,7 +487,7 @@ static void resize_font_dialog()
    MainStatusBar->MoveToBottom(cxClient, cyClient-1) ;
    //  resize the terminal (cols)
    int dyi = (int) cyClient - dy_offset - (int) get_terminal_top() - MainStatusBar->height() ;
-   myTerminal->resize(cxClient-1, dyi); //  dialog is actually drawn a few pixels too small for text
+   myTerminal->resize(cxClient, dyi); //  dialog is actually drawn a few pixels too small for text
    
    save_cfg_file();
 }
@@ -641,7 +641,7 @@ static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
       {
       WINDOWPOS* pos = (WINDOWPOS*)lParam;
       if (!(pos->flags & SWP_NOSIZE))
-         pos->cx = cxClient-1;   // hardcoded, no private_data needed
+         pos->cx = cxClient;   // hardcoded, no private_data needed
       break;
       }      
       return TRUE ;
