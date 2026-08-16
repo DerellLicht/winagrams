@@ -618,10 +618,6 @@ static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
       do_init_dialog(hwnd, message, wParam, lParam) ;
       return TRUE;
 
-   case WM_GETMINMAXINFO:
-      do_getminmaxinfo(hwnd, message, wParam, lParam) ;
-      return FALSE;
-
    case WM_EXITSIZEMOVE:
       {
       RECT rect ;
@@ -632,6 +628,15 @@ static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
       }
       break ;
    
+   case WM_GETMINMAXINFO:
+      do_getminmaxinfo(hwnd, message, wParam, lParam) ;
+      return FALSE;
+
+   case WM_SIZE:
+      do_size(hwnd, message, wParam, lParam) ;
+      return TRUE ;
+
+   //  this is only required if width is fixed in dialog
    case WM_WINDOWPOSCHANGING:
       {
       WINDOWPOS* pos = (WINDOWPOS*)lParam;
@@ -639,10 +644,6 @@ static INT_PTR CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
          pos->cx = cxClient-1;   // hardcoded, no private_data needed
       break;
       }      
-      return TRUE ;
-
-   case WM_SIZE:
-      do_size(hwnd, message, wParam, lParam) ;
       return TRUE ;
 
    case WM_NOTIFY:
