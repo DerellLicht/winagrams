@@ -37,16 +37,19 @@ der_libs/vlistview.cpp
 
 OBJS = $(CSRC:.cpp=.o) rc.o
 
-BIN=winagrams
-BINS=$(BIN).exe
+BASE=winagrams
+BINS=$(BASE).exe
 
 LIBS = -lcomdlg32 -lgdi32
 
+# Automatically parse the latest version block
+VERSION := $(shell grep -oE '\[[0-9]+\.[0-9]+\]' CHANGELOG.md | head -n 1 | tr -d '[]')
+DIST_ZIP := $(BASE)V$(VERSION).zip
 #************************************************************
 %.o: %.cpp
 	$(TOOLS)/$(GNAME) $(CFLAGS) $< -o $@
 
-all: $(BIN).exe
+all: $(BINS)
 
 clean:
 	rm -f *.exe *.zip *.bak $(OBJS)
@@ -54,9 +57,17 @@ clean:
 wc:
 	wc -l $(CSRC)
 
+# Your new automated release workflow
+release:
+	cmd /C "@echo Preparing GitHub release for v$(VERSION)..."
+	sed -n '/## \['$(VERSION)'\]/,/## \[/p' CHANGELOG.md | sed '$$d' > temp_notes.md
+	gh release create v$(VERSION) ./$(DIST_ZIP) ./CHANGELOG.md --notes-file temp_notes.md
+	rm temp_notes.md
+	cmd /C "@echo Release v$(VERSION) successfully uploaded to GitHub!"
+	
 dist:
 	rm -f *.zip
-	zip $(BIN).zip $(BINS) readme.md dict
+	zip $(DIST_ZIP) $(BINS) readme.md dict CHANGELOG.md
 
 ctidy_all:
 	cmd /C "clang-tidy $(CSRC) -- $(CFLAGS) 2>&1 | grep -oP '\[\K[a-z][a-z0-9-]+(?=\]$$)' | sort | uniq -c | sort -rn"
