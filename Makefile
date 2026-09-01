@@ -63,7 +63,7 @@ wc:
 
 dist:
 	rm -f *.zip
-	zip $(DIST_ZIP) $(BINS) readme.md dict CHANGELOG.md
+	zip $(DIST_ZIP) *.exe readme.md dict LICENSE.txt CHANGELOG.md
 
 # Your new automated release workflow
 release: dist
@@ -101,7 +101,7 @@ depend:
 	makedepend $(CFLAGS) $(CSRC)
 
 anagram:
-	g++ -Wall -O2 -s anagram.cline.cpp -o anagram.exe	
+	g++ -Wall -O2 -Wno-register -Wno-writable-strings -s anagram.cline.cxx -o anagram.exe	
 
 #************************************************************
 

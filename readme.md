@@ -10,7 +10,7 @@ for any purpose that you wish, without contacting me further.
 
 Obtain [source code](https://github.com/DerellLicht/winagrams) here
 
-Download [Windows installer](https://github.com/DerellLicht/bin/raw/master/winagrams.setup.exe) here
+Download [wingrams](https://github.com/DerellLicht/winagrams/releases/tag/v1.09) here
 
 #### history of this program  
 The original command-line anagram program, in C source code,
@@ -36,8 +36,6 @@ more than about 10 pages of results, end up not being very manageable...
 
 #### building the application
 This application is built using the MinGW toolchain; I recommend the [TDM](http://tdm-gcc.tdragon.net/) distribution, to avoid certain issues with library accessibility. The makefile also requires certain Cygwin tools (rm, make, etc).
-Building the Windows installer will require [Inno Setup](http://jrsoftware.org/isinfo.php); 
-I use version 5.37, but later versions should work fine.
 
 To build command-line version, run  
    `make anagram`
